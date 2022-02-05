@@ -1,0 +1,7 @@
+loki:
+  enabled: true
+  persistence:
+    enabled: "true"
+    size: "50Gi"
+promtail:
+  enabled: true

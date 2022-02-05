@@ -1,0 +1,11 @@
+server:
+  retention: "30d"
+  persistentVolume:
+    size: "20Gi"
+resources:
+  requests:
+    cpu: "200m"
+    memory: "250Mi"
+  limits:
+    cpu: "500m"
+    memory: "500Mi"
