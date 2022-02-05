@@ -32,32 +32,25 @@ resource "helm_release" "cert_manager" {
   }
 }
 
-resource "kubernetes_manifest" "cluster_issuer" {
+resource "kubectl_manifest" "cluster_issuer" {
   depends_on = [
     helm_release.cert_manager
   ]
-  manifest = {
-    apiVersion = "cert-manager.io/v1alpha2"
-    kind = "ClusterIssuer"
-    metadata = {
-      name = "letsencrypt"
-      namespace = "hackathon-ingress"
-    }
-    spec = {
-      acme = {
-        email = "bouthinon.alexandre@gmail.com"
-        server = "https://acme-v02.api.letsencrypt.org/directory"
-        privateKeySecretRef = {
-          name = "letsencrypt"
-        }
-        solver = {
-          http01 = {
-            ingress = {
-              class = "traefik"
-            }
-          }
-        }
-      }
-    }
-  }
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+  namespace: hackathon-ingress
+spec:
+  acme:
+    email: bouthinon.alexandre@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+      - http01:
+          ingress:
+            class: traefik-cert-manager
+YAML
 }

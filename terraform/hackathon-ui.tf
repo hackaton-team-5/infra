@@ -39,7 +39,7 @@ resource "kubernetes_deployment" "hackathon_ui_deployment" {
 
           env {
             name  = "VUE_APP_API_ENDPOINT"
-            value = "http://<public_ip_hackathon-api>"
+            value = "https://api.hackathon-team5-cagip.site"
           }
 
           resources {
@@ -102,4 +102,50 @@ resource "kubernetes_service" "hackathon_ui_svc" {
 
     cluster_ip = "None"
   }
+}
+
+resource "kubectl_manifest" "certificate_hackathon_ui" {
+  depends_on = [
+    kubectl_manifest.cluster_issuer
+  ]
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: app
+  namespace: hackathon-ui
+spec:
+  commonName: app.hackathon-team5-cagip.site
+  secretName: app-cert
+  dnsNames:
+    - app.hackathon-team5-cagip.site
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+YAML
+}
+
+resource "kubectl_manifest" "ingress_route_hackathon_ui" {
+  depends_on = [
+    kubectl_manifest.cluster_issuer
+  ]
+  yaml_body = <<YAML
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: app
+  namespace: hackathon-ui
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`app.hackathon-team5-cagip.site`)
+      kind: Rule
+      services:
+        - name: hackathon-ui-svc
+          port: 80
+          namespace: hackathon-ui
+  tls:
+    secretName: app-cert
+YAML
 }

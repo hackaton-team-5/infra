@@ -28,10 +28,10 @@ resource "helm_release" "grafana" {
 
 resource "kubectl_manifest" "certificate_grafana" {
   depends_on = [
-    helm_manifest.cluster_issuer
+    kubectl_manifest.cluster_issuer
   ]
   yaml_body = <<YAML
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: monitoring
@@ -49,7 +49,7 @@ YAML
 
 resource "kubectl_manifest" "ingress_route_grafana" {
   depends_on = [
-    helm_manifest.cluster_issuer
+    kubectl_manifest.cluster_issuer
   ]
   yaml_body = <<YAML
 apiVersion: traefik.containo.us/v1alpha1
