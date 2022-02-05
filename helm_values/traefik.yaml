@@ -37,3 +37,4 @@ resources:
   limits:
     cpu: "300m"
     memory: "100Mi"
+    
