@@ -31,3 +31,33 @@ resource "helm_release" "cert_manager" {
     value = "true"
   }
 }
+
+resource "kubernetes_manifest" "cluster_issuer" {
+  depends_on = [
+    helm_release.cert_manager
+  ]
+  manifest = {
+    apiVersion = "cert-manager.io/v1alpha2"
+    kind = "ClusterIssuer"
+    metadata = {
+      name = "letsencrypt"
+      namespace = "hackathon-ingress"
+    }
+    spec = {
+      acme = {
+        email = "bouthinon.alexandre@gmail.com"
+        server = "https://acme-v02.api.letsencrypt.org/directory"
+        privateKeySecretRef = {
+          name = "letsencrypt"
+        }
+        solver = {
+          http01 = {
+            ingress = {
+              class = "traefik"
+            }
+          }
+        }
+      }
+    }
+  }
+}
