@@ -21,16 +21,6 @@ jobs:
       id-token: 'write'
     steps:
       - uses: actions/checkout@v2
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: '${{ secrets.GKE_SA_KEY }}'
-      - id: 'get-credentials'
-        uses: 'google-github-actions/get-gke-credentials@v0'
-        with:
-          cluster_name: ${{ GKE_CLUSTER_NAME }}
-          location: ${{ GKE_REGION }}
       - uses: azure/setup-helm@v1
         with:
           version: '3.7.2'
@@ -39,3 +29,5 @@ jobs:
           cd terraform/
           terraform init
           terraform apply -auto-approve 
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GKE_SA_KEY }}
