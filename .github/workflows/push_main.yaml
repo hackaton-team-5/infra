@@ -25,9 +25,7 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0'
         with:
-          token_format: 'access_token'
-          workload_identity_provider: 'projects/892650738590/locations/global/workloadIdentityPools/github-action-pool/providers/github-provider'
-          service_account: 'github-action@cagip-hackathon-eq05-inno0-27.iam.gserviceaccount.com'
+          credentials_json: '${{ secrets.GKE_SA_KEY }}'
       - uses: azure/setup-helm@v1
         with:
           version: '3.7.2'
