@@ -31,4 +31,5 @@ jobs:
           version: '3.7.2'
       - name: Deploy
         run: |
+          terraform init
           terraform apply -auto-approve 
