@@ -36,8 +36,9 @@ jobs:
       - name: Deploy
         run: |
           cd terraform/
-          terraform workspace select $GKE_ENV
           terraform init
+          terraform workspace select $GKE_ENV
+          terraform workspace list
           terraform apply -auto-approve -var-file=environments/$GKE_ENV.tfvars
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GKE_SA_KEY }}
