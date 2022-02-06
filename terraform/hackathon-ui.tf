@@ -40,7 +40,7 @@ resource "kubernetes_deployment" "hackathon_ui_deployment" {
 
           env {
             name  = "VUE_APP_API_ENDPOINT"
-            value = "https://api.hackathon-team5-cagip.site"
+            value = "https://api.${var.dns_domain}"
           }
 
           resources {
@@ -117,10 +117,10 @@ metadata:
   name: app
   namespace: hackathon-ui
 spec:
-  commonName: app.hackathon-team5-cagip.site
+  commonName: app.${var.dns_domain}
   secretName: app-cert
   dnsNames:
-    - app.hackathon-team5-cagip.site
+    - app.${var.dns_domain}
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
@@ -141,7 +141,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`app.hackathon-team5-cagip.site`)
+    - match: Host(`app.${var.dns_domain}`)
       kind: Rule
       services:
         - name: hackathon-ui-svc

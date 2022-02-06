@@ -55,10 +55,9 @@ provider "kubectl" {
 data "google_client_config" "provider" {}
 
 data "google_container_cluster" "cluster" {
-  name     = "cluster-demo"
-  location = "europe-west1"
+  name     = var.cluster_name
+  location = var.cluster_location
 }
-
 
 # Namespaces -----------------------------------------------------------------------
 resource "kubernetes_namespace" "hackathon_ui" {
@@ -96,10 +95,10 @@ metadata:
   name: api
   namespace: hackathon-api
 spec:
-  commonName: api.hackathon-team5-cagip.site
+  commonName: api.${var.dns_domain}
   secretName: api-cert
   dnsNames:
-    - api.hackathon-team5-cagip.site
+    - api.${var.dns_domain}
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
@@ -120,7 +119,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`api.hackathon-team5-cagip.site`)
+    - match: Host(`api.${var.dns_domain}`)
       kind: Rule
       services:
         - name: hackathon-api

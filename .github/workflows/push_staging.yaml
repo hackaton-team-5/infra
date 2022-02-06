@@ -1,15 +1,14 @@
-name: Push checks
+name: Deploy Staging (with Terraform)
 
 on:
   push:
     branches:
-      - main
-      - cd
+      - dev
 
 env:
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  GKE_CLUSTER_NAME: cluster-demo
+  GKE_CLUSTER_NAME: cluster-staging
   GKE_REGION: europe-west1
+  GKE_ENV: staging
 
 jobs:
   deploy:
@@ -37,7 +36,8 @@ jobs:
       - name: Deploy
         run: |
           cd terraform/
+          terraform workspace select $GKE_ENV
           terraform init
-          terraform apply -auto-approve 
+          terraform apply -auto-approve -var-file=environments/$GKE_ENV.tfvars
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GKE_SA_KEY }}

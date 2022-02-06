@@ -37,10 +37,10 @@ metadata:
   name: monitoring
   namespace: hackathon-monitoring
 spec:
-  commonName: monitoring.hackathon-team5-cagip.site
+  commonName: monitoring.${var.dns_domain}
   secretName: monitoring-cert
   dnsNames:
-    - monitoring.hackathon-team5-cagip.site
+    - monitoring.${var.dns_domain}
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
@@ -61,7 +61,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`monitoring.hackathon-team5-cagip.site`)
+    - match: Host(`monitoring.${var.dns_domain}`)
       kind: Rule
       services:
         - name: grafana
