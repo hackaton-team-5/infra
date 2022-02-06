@@ -6,6 +6,7 @@ resource "kubernetes_service_account" "hackathon_ui_user" {
   }
 }
 
+/*
 resource "kubernetes_deployment" "hackathon_ui_deployment" {
   metadata {
     name      = "hackathon-ui-deployment"
@@ -78,6 +79,7 @@ resource "kubernetes_deployment" "hackathon_ui_deployment" {
     }
   }
 }
+*/
 
 resource "kubernetes_service" "hackathon_ui_svc" {
   metadata {
