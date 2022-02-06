@@ -6,7 +6,24 @@ resource "kubernetes_service_account" "hackathon_ui_user" {
   }
 }
 
-/*
+resource "kubernetes_horizontal_pod_autoscaler" "hackathon_ui" {
+  metadata {
+    name = "hackathon-ui"
+    namespace = "hackathon-ui"
+  }
+
+  spec {
+    max_replicas = 10
+    min_replicas = 1
+    target_cpu_utilization_percentage = 50
+
+    scale_target_ref {
+      kind = "Deployment"
+      name = "hackathon-ui"
+    }
+  }
+}
+
 resource "kubernetes_deployment" "hackathon_ui_deployment" {
   metadata {
     name      = "hackathon-ui-deployment"
@@ -79,7 +96,7 @@ resource "kubernetes_deployment" "hackathon_ui_deployment" {
     }
   }
 }
-*/
+
 
 resource "kubernetes_service" "hackathon_ui_svc" {
   metadata {
